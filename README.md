@@ -6,9 +6,10 @@ When using the API in Clozure CL:
 
 There is a problem with function name clash between CCL and fst.
 
-Make sure there is no --export-dynamic in the Makefile of CCL:
+Make sure there is no --export-dynamic in the Makefile of CCL
+(ccl/lisp-kernel/linuxx8664/Makefile):
 
-instead of this:
+Instead of this:
 
 lisp-kernel/linuxx8664/Makefile:        $(CC)  -m64 $(CDEBUG)  -Wl,--export-dynamic $(HASH_STYLE) 
 
