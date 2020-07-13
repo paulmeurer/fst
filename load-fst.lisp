@@ -12,9 +12,10 @@
   (:unix
    #+(and X86-64 (or (not iness) gekko))
    (:default "/usr/local/fst/test/cfsm_api/linux64/lib/libcfsm")
-   ;;(:default "/usr/local/fst/cfsm_api/linux64/lib/libcfsm")
-   #+(and X86-64 iness (not gekko))
-   (:default "/home/iness/local/fst/cfsm_api/linux64/lib/libcfsm")))
+   #+clarino
+   (:default "/usr/local/fst/cfsm_api/linux64/lib/libcfsm")
+   #+(and X86-64 iness (not gekko) (not clarino))
+   (:default "/home/clarino/local/fst/cfsm_api/linux64/lib/libcfsm")))
 
 (use-foreign-library libfst)
 
