@@ -28,6 +28,8 @@ define PresFutAor1 Pres | Fut | Aor1 ;
 define FutAor Fut | Aor1 ;
 define PresAor1 Pres | Aor1 ;
 
+define PV ([{ἐκ}|{ἀπο}|{κατα}|{συν}|{προσ}|{εἰσ}] "·") ;
+
 # non-contract verbs ending in vowel get ":"
 define Verb symbolize.i .o. [
         PresFut [ {σπευδω} |
@@ -44,9 +46,9 @@ define Verb symbolize.i .o. [
         Pres {ἐσθιω}      | Fut Med {ἐσθιω}:{ἐδ#-} | Aor2 {ἐσθιω}:{φαγ-} |
         PresFut {ἀγω}     | Aor2 {ἀγω}:{ἀγαγ-} |
         PresFut {λειπω}   | Aor2 {λειπω}:{λιπ-} |
-        Pres {αἰρω}       | Fut {αἰρω}:{ἀρε:-} |
-        PresFut {αἱρεω}   | Aor2 "@U.Aug.ει@" "@P.Aug.-@" {αἱρεω}:{ἑλ-} | # still wrong: εἵλον
-        Pres {βαλλω}      | Fut {βαλλω}:{βαλε:-} | Aor2 {βαλλω}:{βαλ-} |
+        Pres {αἰρω}       | Fut {αἰρω}:{ἀρε:-} | # heben
+        PresFut {αἱρεω}   | Aor2 "@U.Aug.ει@" "@P.Aug.-@" {αἱρεω}:{ἑλ-} | # nehmen
+        Pres PV {βαλλω}   | Fut PV {βαλλω}:{βαλε:-} | Aor2 PV {βαλλω}:{βαλ-} |
         Pres {εὐρισκω}    | Fut {εὐρισκω}:{εὐρε-} | Aor2 {εὐρισκω}:{εὐ-} |
         Pres {ἐχω}        | Fut {ἐχω}:[{ἑχ-}|{σχε-}] | Aor2 {ἐχω}:{σχ} |
         Pres {ἐγειρω}     | Fut {ἐγειρω}:{ἐγερε:-} |
@@ -177,7 +179,7 @@ define Contractions [
      ] ;
 
 
-define Short [ α | ε | ι | ο | υ | ου | αι | ἐ | ἑ ] ;
+define Short [ α | ε | ι | ο | υ | ου | αι | ἐ | ἑ | Aug | AugA ] ;
 define Long  [ η | ω | ει | αἰ | αἱ | ῃ | ευ ] ; 
 
 define Vowel Short | Long ;
@@ -186,21 +188,23 @@ define Vowel Short | Long ;
 define Consonant \[Vowel | "#"] ;
 
 define Accented [ ά | έ | ί | ό | ύ | ή | ώ | ού | αί | εί | ὄ | ἄ | ἔ | ὔ | ἤ | ὤ
-                | αἴ | εὔ | ῄ | ἥ | ἕ | εἶ | εἵ | εύ ] ;
+                | αἴ | εὔ | ῄ | ἥ | ἕ | εἶ | εἵ | εύ | AugA | "AugA.ει" ] ;
 
-define Character Short | Long | Accented ;
+define AVowel Short | Long | Accented ;
 
 define RegressiveAccent [
           α -> ά, ε -> έ, ι -> ί, ο -> ό, υ -> ύ, η -> ή, ω -> ώ, ου -> ού, αι -> αί, ει -> εί,
           ὀ -> ὄ, ἀ -> ἄ, ἐ -> ἔ, ἑ -> ἕ, ευ -> εύ,
           ἠ -> ἤ, ὠ -> ὤ, ὐ -> ὔ, αἰ -> αἴ, αἱ -> αἵ, ῃ -> ῄ, εὐ -> εὔ, εἰ -> εἶ, εἱ -> εἵ,
-          ἡ -> ἥ
+          ἡ -> ἥ,
+          Aug -> AugA, "Aug.ει" -> "AugA.ει"
           || _ Consonant* (Vowel Consonant* | Vowel Consonant* [ Short | "#" ] Consonant*) .#. ]
         .o. 
         [ ά -> α, έ -> ε, ί -> ι, ό -> ο, ύ -> υ, ή -> η, ώ -> ω, ού -> ου, αί -> αι, εί -> ει,
           ὄ -> ὀ, ἄ -> ἀ, ἔ -> ἐ, ἕ -> ἑ, εύ -> ευ,
           ἤ -> ἠ, ὤ -> ὠ, ὔ -> ὐ, αἴ -> αἰ, αἵ -> αἱ, ῄ -> ῃ, εὔ -> εὐ, εἶ -> εἰ, εἵ -> εἱ, 
-          ἥ -> ἡ 
+          ἥ -> ἡ,
+          AugA -> Aug, "AugA.ει" -> "Aug.ει"
           || Accented ?*  _ ]
         .o.
         [ "#" -> 0 ] ;
@@ -261,21 +265,23 @@ define Future [
        ] .o. SigmaAssimilations
        ;
 
+
+define positionAugment [ "·" -> "·" Aug ] .o. [ Aug -> 0 || _ ?* Aug ] ;
+
 define resolveAugment [
-       [ "·" -> Aug ] .o. [ Aug -> 0 || _ ?* Aug ] .o. # place augment behind prefix
-       [ Aug ἀ -> ἠ ] .o.
-       [ Aug ἁ -> ἡ ] .o.
-       [ Aug ἑ -> ἡ ] .o.
-       [ Aug ἐ -> ἠ ] .o.
-       [ Aug ι -> ι ] .o.
-       [ ο Aug -> ε ] .o.
-       [ Aug -> ἐ ] .o.
-       [ "Aug.ει" ἑ -> εἱ  ] .o.
-       [ "Aug.ει" ἐ -> εἰ ] .o.
-       [ "Aug.ει" ἰ -> εἰ ]
-   #    [ "Aug.ει" ἑ -> εἷ ] .o.
-   #    [ "Aug.ει" ἐ -> εἶ ] .o.
-   #    [ "Aug.ει" ἰ -> εἶ ]
+       # [ κ -> ξ || _ [ Aug | AugA ] ] .o.
+       [ AugA ἑ -> ἧ, AugA ἑ -> ἦ, AugA ἰ -> ἶ, AugA ὀ -> ὦ || _ Consonant* Short Consonant* .#. ] .o.
+       [ AugA ἑ -> ἥ, AugA ἑ -> ἤ, AugA ἰ -> ἴ, AugA ὀ -> ὤ ] .o.
+       [ Aug ἑ -> ἡ, Aug ἑ -> ἠ, Aug ἰ -> ἰ, Aug ὀ -> ὠ, Aug ι -> ῑ, Aug ί -> ῑ́ ] .o.
+       [ Aug ἕ -> ἥ, Aug ἔ -> ἤ, Aug ἴ -> ἴ, Aug ὄ -> ὤ ] .o.
+       [ ο "·" Aug -> ε, ό "·" Aug -> έ, α "·" Aug -> ε, ά "·" Aug -> έ ] .o.
+       [ ο "·" AugA -> έ, α "·" AugA -> έ ] .o.
+       [ "AugA.ει" ἑ -> εἷ, "AugA.ει" ἐ -> εἶ, "AugA.ει" ἰ -> εἶ || _ Consonant* Short Consonant* .#. ] .o.
+       [ "AugA.ει" ἑ -> εἵ, "AugA.ει" ἐ -> εἴ, "AugA.ει" ἰ -> εἴ  ] .o.
+       [ "Aug.ει" ἕ -> εἵ, "Aug.ει" ἔ -> εἴ, "Aug.ει" ἴ -> εἴ ] .o.
+       [ "Aug.ει" ἑ -> εἱ, "Aug.ει" ἐ -> εἰ, "Aug.ει" ἰ -> εἰ ] .o.
+       [ Aug -> ε, AugA -> έ || "·" _ ] .o.
+       [ Aug -> ἐ, AugA -> ἔ ]
        ] ;
 
 define Augment [ "@U.Aug.-@" 0:Aug | "@U.Aug.ει@" 0:"Aug.ει" ] ;
@@ -322,7 +328,7 @@ eliminate flag Aug
 eliminate flag Type
 
 define Aorist ;
-define Aorist Aorist .o. SigmaAssimilations .o. resolveAugment ;
+define Aorist Aorist .o. SigmaAssimilations .o. positionAugment ;
 
 
 read regex [ RegressiveAccent.i
@@ -331,7 +337,8 @@ read regex [ RegressiveAccent.i
        .o.
        [ Present | Future | Aorist ]
        .o.
-       RegressiveAccent ] ;
+       RegressiveAccent
+       ] ;
 
 eliminate flag Num
 eliminate flag Tense
@@ -341,9 +348,12 @@ eliminate flag Aug
 
 define Verbs
 
-read regex atomize.i .o. Verbs .o. Contractions
-            .o. atomize ;
+define assimilations [
+       [ ν -> μ || _ "·" β ] .o.
+       [ κ -> ξ || _ "·" AVowel ]
+       ] ;
 
+read regex atomize.i .o. assimilations.i .o. Verbs .o. resolveAugment .o. Contractions .o. assimilations .o. atomize ;
 
 save stack greek.fst
 
