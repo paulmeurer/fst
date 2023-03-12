@@ -16,10 +16,13 @@ define atomize [
        ού -> {ού}, αί -> {αί}, οί -> {οί}, εί -> {εί}, εύ -> {εύ}, εὔ -> {εὔ}, εὕ -> {εὕ},
        οῦ -> {οῦ}, αῖ -> {αῖ}, οῖ -> {οῖ}, εῖ -> {εῖ}, εἱ -> {εἱ},
        αἰ -> {αἰ}, αἴ -> {αἴ}, αἱ -> {αἱ}, εἷ -> {εἷ},
+       αυ -> {αυ}, αὐ -> {αὐ}, αὑ -> {αὑ},
+       αύ -> {αύ}, αὔ -> {αὔ}, αὕ -> {αὕ},
        οἰ -> {οἰ}, οἴ -> {οἴ}, οἱ -> {οἱ},
        αἵ -> {αἵ}, αἶ -> {αἶ}, εἰ -> {εἰ},
        εἴ -> {εἴ}, εἵ -> {εἵ}, εἶ -> {εἶ}, εὖ -> {εὖ}, εῦ -> {εῦ},
-       "·" -> 0
+       εὗ -> {εὗ}, ηὑ -> {ηὑ}, ηὕ -> {ηὕ}, ηὗ -> {ηὗ},
+       "·" -> 0, "!" -> 0
        ] ;
 
 define symbolize [
@@ -30,23 +33,33 @@ define symbolize [
 define Pres "@U.Tense.Pres@" ;
 define Fut "@U.Tense.Fut@" ;
 define Aor "@U.Tense.Aor@" ;
-define Aor1 Aor "@U.Type.Aor1@" ;
-define Aor2 Aor "@U.Type.Aor2@" ;
-define Aor2A Aor "@U.Type.Aor2A@" ;
-define AorK Aor "@U.Type.AorK@" ;
+define Aor1 Aor "@U.AorType.Aor1@" ;
+define Aor2 Aor "@U.AorType.Aor2@" ;
+define Aor2A Aor "@U.AorType.Aor2A@" ;
+define AorK Aor "@U.AorType.AorK@" ;
+define Perf "@U.Tense.Perf@" "@U.PerfType.ka@" ;
+define PerfA "@U.Tense.Perf@" "@U.PerfType.a@" ;
 define FutMed "@U.FutVoiceR.Med@" ;
+define Act "@U.VoiceR.Act@" ; # voice restriction
 define Med "@U.VoiceR.Med@" ; # voice restriction
 define PresFut Pres | Fut ;
 define PresFutAor1 Pres | Fut | Aor1 ;
+define PresFutAor1Perf Pres | Fut | Aor1 | Perf ;
+define PresFutAor1PerfA Pres | Fut | Aor1 | PerfA ;
 define PresFutAor2 Pres | Fut | Aor2 ;
+define PresFutPerfA Pres | Fut | PerfA ;
+define PresPerfA Pres | PerfA ;
 define FutAor1 Fut | Aor1 ;
 define FutAor2 Fut | Aor2 ;
 define PresAor1 Pres | Aor1 ;
+define FutPerf Fut | Perf ;
+define Pass "@U.Voice.Pass@" ; # also passive stem
+define PassE Pass "@U.Pass.η@" ;
+define PresFutAor1PerfPass PresFutAor1Perf | Pass ;
+define PresFutAor1Pass PresFutAor1 | Pass ; 
+define PresFutAor1PassE PresFutAor1 | PassE ; 
 define Sg "@U.Num.1Sg@" | "@U.Num.2Sg@" | "@U.Num.3Sg@" ;
 define Pl "@U.Num.1Pl@" | "@U.Num.2Pl@" | "@U.Num.3Pl@" ;
-
-define Pass "@U.Voice.Pass@" ; # also passive stem
-define Pass2 Pass "@U.Pass.η@" ;
 
 define MI "@U.Group.μι@" ;
 
@@ -56,51 +69,56 @@ define AugEi "@U.Aug.ει@" "@P.Aug.-@" | "@U.Past.-@" ;
 
 define Unpers "@U.Num.3Sg@" ;
 
-# non-contract verbs ending in vowel get ":"
+# non-contract verbs ending in vowel get ":" (to be treated like contract verbs in e.g. Fut)
 define Verb symbolize.i .o. "@P.Them.+@" [
-        PresFut [ {σπευδω} |
-        {παρασκευαζω} |
-        {τιμαω} |
-        {δηλοω} ] |
-        PresFutAor1 Pass {κομιζω} |
+        PresFutAor1Perf {σπευδω} |
+        PresFutAor1Perf {παρασκευαζω} |
+        PresFutAor1PerfPass {δουλοω} |
+        PresFutAor1PerfPass {δηλοω} |
+        PresFutAor1PerfPass {τιμαω} |
+        PresFutAor1PerfPass {κομιζω} |
         PresFut {μενω} | Aor1 {μενω}:{μειν-} |
-        PresFutAor1 Pass {φιλεω} |
-        PresFutAor1 Pass {ἀγνοεω} |
-        PresFutAor1 Pass {λυω} |
-        PresFutAor1 Pass2 {γραφω} |
-        PresFutAor1 Pass {πεμπω} |
-        PresFutAor1 Pass {οἰκεω} |
-        PresFutAor1 Pass {αἰτεω} |
-        Pres {φυλαττω} | FutAor1 Pass {φυλαττω}:{φυλακ-} |
+        PresFutAor1PerfPass {φιλεω} |
+        PresFutAor1PerfPass {ἀγνοεω} |
+        PresFutAor1PerfPass {λυω} |
+        PresFutAor1PassE {γραφω} | PerfA {γραφω} | 
+        [ PresFutAor1PerfA | Pass ] {πεμπω} |
+        PresFutAor1PerfA {τρεπω} | PassE {τρεπω}:{τραπ-} |
+        PresPerfA {τρεφω} | FutAor1 {τρεφω}:{θρεφ-} | PassE {τρεφω}:{τραφ-} |
+        Pres {τρεχω}      | [Fut Med | Perf ] {τρεχω}:{δραμε:-} | Aor2 {τρεχω}:{δραμ-} |
+        PresFutAor1Pass {οἰκεω} |
+        PresFutAor1Pass {αἰτεω} |
+        PresFutAor1Pass {ποιεω} |
+        Pres {φυλαττω} | [ FutAor1 | Pass ] {φυλαττω}:{φυλακ-} |
         Pres {πλε:ω}      | Fut Med {πλε:ω}:[{πλευ-}|{πλευσε:-}] | Aor1 {πλε:ω}:{πλευ-} |
         Pres {ἀποθνῃσκω}  | Fut Med {ἀποθνῃσκω}:{ἀποθανε:-} | Aor2 {ἀποθνῃσκω}:{ἀπο·θαν-} |
         Pres Med {ἀφ·ικνεομαι} | FutAor2  Med {ἀφ·ικνεομαι}:{ἀφ·ικ-} |
         Pres {ἐσθιω}      | Fut Med {ἐσθιω}:{ἐδ#-} | Aor2 {ἐσθιω}:{φαγ-} |
         PresFut {ἀγω}     | Aor2 {ἀγω}:{ἀγαγ-} |
-        PresFut {λειπω}   | Aor2 {λειπω}:{λιπ-} |
+        PresFutPerfA {λειπ!ω}   | Aor2 {λειπω}:{λιπ-} | # !: no aspiration in Perf
         PresFut {ἀγω}     | Aor2 {ἀγω}:{ἀγαγ-} |
-        Pres {αἰρω}       | Fut {αἰρω}:{ἀρε:-} | Aor1 {αἰρω}:{ἀρ-} | # heben
+        Pres {αἰρω}       | Fut {αἰρω}:{ἀρεL-} | Aor1 {αἰρω}:{ἀρ-} | # heben
         PresFut {αἱρεω}   | Aor2 AugEi {αἱρεω}:{ἑλ-} | # nehmen
-        Pres PV {βαλλω}   | Fut PV {βαλλω}:{βαλε:-} | Aor2 PV {βαλλω}:{βαλ-} |
-        Pres {εὑρισκω}    | Fut {εὑρισκω}:{εὑρε-} | Aor2 {εὑρισκω}:{εὑρ-} |
+        Pres PV {βαλλω}   | Fut PV {βαλλω}:{βαλεL-} | Aor2 PV {βαλλω}:{βαλ-} |
+        Pres {εὑρισκω}    | FutPerf {εὑρισκω}:{εὑρε-} | Aor2 {εὑρισκω}:{εὑρ-} |
         Pres {ἐχω}        | Fut {ἐχω}:[{ἑχ-}|{σχε-}] | Aor2 {ἐχω}:{σχ-} |
-        PresAor1 {ἐγειρω} | Fut {ἐγειρω}:{ἐγερε:-} |
+        PresAor1 {ἐγειρω} | Fut {ἐγειρω}:{ἐγερεL-} |
         Pres {ἐλαυνω}     | Fut {ἐλαυνω}:{ἐλα#-} | Aor1 {ἐλαυνω}:{ἐλα-} | # Aor wrong
         PresFutAor1 Unpers {δοκει}:{δοκ-} |
-        Pres {ἀπο·κτεινω}  | Fut {ἀπο·κτεινω}:{ἀπο·κτενε:-} | Aor1 {ἀπο·κτεινω}:{ἀπο·κτεν-} |
-        Pres {καμνω}      | Fut Med {καμνω}:{καμε:-} | Aor2 {καμνω}:{καμ-} |
-        Pres {λαμβανω}    | Fut Med Pass {λαμβανω}:{ληβ-} | Aor2 {λαμβανω}:{λαβ-} |
+        Pres {ἀπο·κτεινω}  | Fut {ἀπο·κτεινω}:{ἀπο·κτενεL-} | Aor1 {ἀπο·κτεινω}:{ἀπο·κτεν-} |
+        Pres {καμνω}      | Fut Med {καμνω}:{καμεL-} | Aor2 {καμνω}:{καμ-} |
+        Pres {λαμβανω}    | [ Fut Med | Pass ] {λαμβανω}:{ληβ-} | Aor2 {λαμβανω}:{λαβ-} |
         Pres {μανθανω}    | Fut Med {μανθανω}:{μαθε-} | Aor2 {μανθανω}:{μαθ-} |
         Pres {πασχω}      | Fut Med {πασχω}:{πενθ-} | Aor2 {πασχω}:{παθ-} |
         Pres {βαινω}      | [ Fut Med | Aor2A ] {βαινω}:{βη-} |
-        Pres {γιγνωσκω}   | Fut Med {γιγνωσκω}:{γνω-} | Aor2 {γιγνωσκω}:{γνω-} |
+        Pres {γιγνωσκω}   | Fut Med {γιγνωσκω}:{γνω-} | Aor2A {γιγνωσκω}:{γνω-} |
         Pres {ὁραω}       | Fut Med {ὁραω}:{ὀπ-}      | Aor2 AugEi {ὁραω}:{ἰδ-} |
-        Pres {τρεχω}      | Fut Med {τρεχω}:{δραμε:-} | Aor2 {τρεχω}:{δραμ-} |
         Pres {πινω}       | Fut Med {πινω}:{πι#-}     | Aor2 {πινω}:{πι-} | # no σ!
         Pres {πιπτω}      | Fut Med {πιπτω}:{πεσε:-}  | Aor2 {πιπτω}:{πεσ-} |
         PresFutAor1 {δηλοω} |
         PresFutAor1 {παρ·εινεω} |
         PresFutAor1 {ἐλευθεροω} |
+        Pres {τεμνω} | Fut {τεμνω}:{τεμε:-} | Aor2 {τεμνω}:{τεμ-} | [Pass | Perf] {τεμνω}:{τμε-} |  
         PresFut {λεγω}    | Aor2 AugEi {λεγω}:{ἐπ-} |
         PresFut FutMed {φευγω} | Aor2 {φευγω}:{φυγ-} |
         Pres Med {μαχομαι} | FutAor1 Med {μαχομαι}:{μαχε:-} |
@@ -117,7 +135,7 @@ define Verb symbolize.i .o. "@P.Them.+@" [
         PresFut Med {δεχομαι} |
         PresFut Med {δυναμαι} |
         PresFut Med ({προ}){κειμαι} |
-        Pres Med {ἐρχομαι} | Aor2 {ἐρχομαι}:{ἐλθ-} |
+        Pres Med {ἐρχομαι} | Aor2 Act {ἐρχομαι}:{ἐλθ-} |
         Fut [ {διδωμι}:{δω-} | {τιθημι}:{θη-} | AugEi {ἱημι}:{ἡ-} | {ἱστημι}:{στη-} ] |
         [ Aor1 | Aor2A ] {ἱστημι}:{στη-}
        ] .o. symbolize ;
@@ -146,6 +164,42 @@ define PrimActSubj [
        "+2Pl":{ητε}   "@U.Num.2Pl@" |
        "+3Pl":[ω {σι}(ν)] "@U.Num.3Pl@"
        ] "@U.Group.ω@" ;
+
+define PrimActOpt [
+       "+1Sg":{μι}      "@U.Num.1Sg@" |
+       "+2Sg":{ς}       "@U.Num.2Sg@" |
+       "+3Sg":0         "@U.Num.3Sg@" |
+       "+1Pl":{μεν}     "@U.Num.1Pl@" |
+       "+2Pl":{τε}      "@U.Num.2Pl@" |
+       "+3Pl":{εν}      "@U.Num.3Pl@"
+       ] ;
+
+define PrimActOptContr [
+       "+1Sg":{ην}      "@U.Num.1Sg@" |
+       "+2Sg":{ης}      "@U.Num.2Sg@" |
+       "+3Sg":η         "@U.Num.3Sg@" |
+       "+1Pl":{μεν}     "@U.Num.1Pl@" |
+       "+2Pl":{τε}      "@U.Num.2Pl@" |
+       "+3Pl":{εν}      "@U.Num.3Pl@"
+       ] ;
+
+define PrimActOptLiq PrimActOptContr ;
+
+define PrimActImp [
+       "+2Sg":ε       "@U.Num.2Sg@" |
+       "+3Sg":{ετω}   "@U.Num.3Sg@" |
+       "+2Pl":{ετε}   "@U.Num.2Pl@" |
+       "+3Pl":{οντων} "@U.Num.3Pl@"
+       ] "@U.Group.ω@" ;
+
+define PrimMedImp [
+       "+2Sg":[ου {#}]     "@U.Num.2Sg@" |
+       "+3Sg":{εσθω}   "@U.Num.3Sg@" |
+       "+2Pl":{εσθε}   "@U.Num.2Pl@" |
+       "+3Pl":{εσθων}  "@U.Num.3Pl@"
+       ] "@U.Group.ω@" ;
+
+
 
 define MiPrimAct [
        "+1Sg":{Lμι}      "@U.Num.1Sg@" |
@@ -191,6 +245,16 @@ define SecActK [
        "+2Pl":{τε}      "@U.Num.2Pl@" |
        "+3Pl":{σαν}     "@U.Num.3Pl@"
        ] ;
+
+define SecActPerf [
+       "+1Sg":{α}      "@U.Num.1Sg@" |
+       "+2Sg":{ας}     "@U.Num.2Sg@" |
+       "+3Sg":[{ε}(ν)] "@U.Num.3Sg@" |
+       "+1Pl":{αμεν}     "@U.Num.1Pl@" |
+       "+2Pl":{ατε}      "@U.Num.2Pl@" |
+       "+3Pl":[α{σι}(ν)] "@U.Num.3Pl@"
+       ] ;
+
 
 define MiSecAct [
        "+1Sg":{Lον}     "@U.Num.1Sg@" |
@@ -239,7 +303,7 @@ define ThemVSubj [
        ] ;
 
 define Short [ α | ε | ι | ἱ | ο | υ | ου | αι | ἐ | ἑ | Aug ] ;
-define Long  [ η | ω | ει | αἰ | αἱ | οι | οἰ| οἱ| ῃ| ᾳ | ῳ | ευ ] ; 
+define Long  [ η | ω | ει | αἰ | αἱ | οι | οἰ| οἱ| ῃ| ᾳ | ῳ | ευ | ηυ | αυ ] ; 
 
 define Vowel Short | Long ;
 
@@ -248,6 +312,75 @@ define Contractions [
        [η "." σ αι] -> ῃ,
        [ε "." σ ο] -> ου,
        [α "." σ ο] -> ω,
+       [οι "." σ ο] -> οι ο, # λύοιο
+       [έ (":") "." σ ] -> έ ".", # δραμοῦμαι
+       [ε ":" "." σ ] -> ε "."] # μενούμεθα
+     .o.
+     [ [α {..} σ ο] (->) ω ] # ἐδύνω
+     .o.
+     [ [ ":" "." σ ] -> 0 || [ λ | ρ | μ | ν ] _ ] # asig 1. Aor: ἔμεινα
+     .o.
+     [ [ά "." ει] -> ᾷ,
+       [ά {.I} ει] -> ᾶ, # Inf
+       [ό "." ει] -> οῖ,
+       [ό {.I} ει] -> οῦ, # Inf
+       [ά "." ου] -> ῶ,
+       [έ (":") "." (I) ει] -> εῖ,
+       [έ "." ου] -> οῦ,
+       [ό "." ου] -> οῦ,
+       [ο "." οί] -> οῖ, # οί,
+       [ό "." οι] -> οῖ, 
+       [ε "." οί] -> οῖ, # οί,
+       [έ "." οι] -> οῖ, 
+       [α "." οί] -> ῷ, # ῴ,
+       [ά "." οι] -> ῷ,
+       [α "." ό "."] -> ώ,
+       [ε "." ό "."] -> οῦ, # ού
+       [ά "." ω] -> ῶ,
+       [ά "." ο] -> ῶ,
+       [α "." ό] -> ῶ,
+       [ά "." ε] -> ᾶ,
+       [ά "." α] -> ᾶ,
+       [έ "." ω] -> ῶ,
+       [α "." ε] -> α,
+       [α "." ο] -> ω,
+       [ε "." ε] -> ει,
+       [ε "." ε] -> ει,
+       [ε "." έ] -> εῖ,
+       [έ "." ε] -> εῖ,
+       [ε "." ο] -> ου,
+       [έ "." ο] -> οῦ,
+       [ω "." ο] -> ω,
+       [ώ "." ο] -> ῶ,
+       [ω "." ε] -> ω,
+       [ώ "." ε] -> ῶ,
+       [ε "." ό] -> οῦ,
+       [έ ":" "." ε] -> εῖ, #?
+       [ό "." ω] -> ῶ,
+       [ό "." ο] -> οῦ,
+       [ο "." ο] -> ου,
+       [ο "." ό] -> οῦ, # ού,
+       [ό "." ε] -> οῦ,
+       [ο "." έ] -> οῦ,
+       [ο "." ε] -> ου,
+       [έ "." ῃ] -> ῇ,
+       [έ "." η] -> ῆ,
+       [ά "." ῃ] -> ᾷ,
+       [ά "." η] -> ᾶ,
+       [ό "." ῃ] -> οῖ,
+       [ό "." η] -> ῶ
+       ]
+      .o.
+     [ [έ "." α] -> ᾶ || Vowel _ ]
+      .o. [ [":" | "." | I | S ] -> 0 ]
+     ] ;
+
+define ContractionsOrig [
+     [ [ε "." σ αι] -> ει,
+       [η "." σ αι] -> ῃ,
+       [ε "." σ ο] -> ου,
+       [α "." σ ο] -> ω,
+       [οι "." σ ο] -> οι ο, # λύοιο
        [έ (":") "." σ ] -> έ ".", # δραμοῦμαι
        [ε ":" "." σ ] -> ε "."] # μενούμεθα
      .o.
@@ -261,7 +394,13 @@ define Contractions [
        [έ (":") "." (I) ει] -> εῖ,
        [έ "." ου] -> οῦ,
        [ό "." (I) ει] -> οῖ,
-       [ό "." ου] -> οῦ ]
+       [ό "." ου] -> οῦ,
+       [ο "." οί] ->  οί,
+       [ό "." οι] -> οῖ, 
+       [ε "." οί] ->  οί,
+       [έ "." οι] -> οῖ, 
+       [α "." οί] ->  ῴ,
+       [ά "." οι] -> ῷ ] 
        .o.
      [ [α "." ό "."] -> ώ,
        [ε "." ό "."] -> ού
@@ -276,6 +415,9 @@ define Contractions [
        [α "." ε] -> α,
        [α "." ο] -> ω,
        [ε "." ε] -> ει,
+       [ε "." ε] -> ει,
+       [ε "." έ] -> εῖ,
+       [έ "." ε] -> εί,
        [ε "." ο] -> ου,
        [έ "." ο] -> οῦ,
        [ω "." ο] -> ω,
@@ -283,7 +425,7 @@ define Contractions [
        [ω "." ε] -> ω,
        [ώ "." ε] -> ῶ,
        [ε "." ό] -> ού,
-       [έ (":") "." ε] -> εῖ,
+       [έ ":" "." ε] -> εῖ, #?
        [ό "." ω] -> ῶ,
        [ό "." ο] -> οῦ,
        [ο "." ο] -> ου,
@@ -306,12 +448,13 @@ define Contractions [
 define ShortA Short | ά | έ | ί | ό | ύ | ού | αί | ὄ | ἄ | ἔ | ὔ | αἴ | ἕ | ἵ | AugA |
                       ᾶ | ῖ | ῦ | οῦ | αῖ | ἆ | ἷ | ὖ | αἶ | αἷ ;
 
-define LongA  Long  | ώ | εί | ἤ | ὤ | εὔ | ῄ | ἥ | εύ | ῆ | ῶ |εῖ | εῦ | ἧ | ὦ | ῇ | εὖ | εἶ | εἷ | ἧ ;
+define LongA  Long  | ώ | εί | ἤ | ὤ | εὔ | ῄ | ἥ | εύ | ῆ | ῶ |εῖ | εῦ | ἧ | ὦ | ῇ | εὖ | εὗ | εἶ | εἷ | ἧ |
+                      οί | οῖ | οἴ |  οἵ | οἶ | οἷ | ηὔ | ηὗ | ηὖ | ηὕ | εὔ | εὕ ;
 
 define Accented [ ά | έ | ί | ό | ύ | ή | ώ | ού | αί | εί | οί | ὄ | ἄ | ἔ | ὔ | ἤ | ὤ
-                | αἴ | εὔ | ῄ | ἥ | ἕ | εύ | ἵ | οἴ | οἵ 
+                | αἴ | εὔ | ῄ | ἥ | ἕ | εύ | ἵ | οἴ | οἵ | οῖ
                 | ᾶ | ῖ | ῦ | ῆ | ῶ | οῦ | αῖ | εῖ | ἆ | εῦ | ἷ | ἧ | ὦ | ὖ | αἶ | αἷ | ῇ | εὖ | εἶ | εἷ | ἧ
-                | αἵ | εἵ | ᾔ | ᾕ | ᾥ | ᾤ | ᾅ | ᾄ
+                | αἵ | εἵ | ᾔ | ᾕ | ᾥ | ᾤ | ᾅ | ᾄ | ηὔ | ηὗ | ηὖ | ηὕ | εὕ
                 | AugA | "AugA.ει" ] ;
 
 define AVowel Short | Long | Accented ;
@@ -337,17 +480,22 @@ define RegressiveAccent [
           || _ Consonant* (LongA Consonant* | AVowel Consonant* [ ShortA | "#" ] Consonant*) .#. ]
         .o. 
         [ ά -> α, έ -> ε, ί -> ι, ό -> ο, ύ -> υ, ή -> η, ώ -> ω, ού -> ου, αί -> αι, εί -> ει,
-          ὄ -> ὀ, ἄ -> ἀ, ἔ -> ἐ, ἕ -> ἑ, εύ -> ευ, ἵ -> ἱ,
+          ὄ -> ὀ, ἄ -> ἀ, ἔ -> ἐ, ἕ -> ἑ, εύ -> ευ, ἵ -> ἱ, οί -> οι,
           ἤ -> ἠ, ὤ -> ὠ, ὔ -> ὐ, αἴ -> αἰ, αἵ -> αἱ, ῄ -> ῃ, εὕ -> εὑ, εὔ -> εὐ, εἶ -> εἰ, εἵ -> εἱ,
           ἥ -> ἡ,
           ᾶ -> α, ῖ -> ι, ῦ -> υ, ῆ -> η, ῶ -> ω, οῦ -> ου, αῖ -> αι, εῖ -> ει,
-          ἆ -> ἀ, εῦ -> ευ, ἷ -> ἱ,
+          ἆ -> ἀ, εῦ -> ευ, ἷ -> ἱ, οῖ -> οι,
           ἧ -> ἡ, ὦ -> ὠ, ὖ -> ὐ, αἶ -> αἰ, αἷ -> αἱ, οἶ -> οἰ, οἷ -> οἱ,
-          ῇ -> ῃ, εὖ -> εὐ, εἶ -> εἰ, εἷ -> εἱ,
+          ῇ -> ῃ, εὖ -> εὐ, εὗ -> εὑ, εἶ -> εἰ, εἷ -> εἱ,
           AugA -> Aug, "AugA.ει" -> "Aug.ει"
           || Accented ?*  _ ]
         .o.
         [ "#" -> 0 ] ;
+
+define RegressiveAccentCirc [
+          ᾶ -> ά, ῖ -> ί, ῦ -> ύ, ῆ -> ή, ῶ -> ώ, οῦ -> ού, αῖ -> αί, εῖ -> εί, οῖ -> οί,
+          εῦ -> εύ, ᾷ -> ᾴ, ῇ -> ῄ, ῷ -> ῴ
+          || _ Consonant* [LongA Consonant* | AVowel Consonant* [ ShortA | "#" ] Consonant*] .#. ] ;
 
 define izoContraction [ ι ζ "." σ -> ι ε "." ] ; # κομίζω -> κομιῶ
 
@@ -367,15 +515,6 @@ define SigmaAssimilations [
       [ {ενσ} -> ει σ # πείσομαι
       ] ;
 
-define PassiveAssimilations [
-       β P -> φ,
-       π P -> φ,
-       γ P -> χ,
-       κ P -> χ,
-       [δ | τ | θ | ζ] P -> σ
-      ] .o. P -> 0 ;
-
-
 define lengthenContractStem [
        ε -> η, α -> η, ο -> ω || _ ("@U.Them.-@") .#. ] ;
 
@@ -387,7 +526,7 @@ define getStem [
        ] ;
 
 # 10.5
-define asigmaticLiqNasStemFut [ λ | ρ | μ | ν ] -> ... ε ":" || _ .#. ;
+define asigmaticLiqNasStemFut [ λ | ρ | μ | ν ] -> ... ε L || _ .#. ;
 # 12.3
 define asigmaticLiqNasStemAor [ λ | ρ | μ | ν ] -> ... ":" || _ .#. ;
 
@@ -402,16 +541,27 @@ define Present [
         ]
           0:"." 
        [
-         [ "@D.VoiceR.Med@" [ PrimAct "+Pres":0 "+Act":0 | PrimActSubj "+Pres":0 "+Act":0 "+Subj":0 ] ]
-       | [ "@U.Them.+@" [ ThemV PrimMed "+Pres":0 "+Med":0 | ThemVSubj PrimMed "+Pres":0 "+Med":0 "+Subj":0 ] ]
+         [  [ PrimAct "+Pres":0 "+Act":0 
+            | PrimActSubj "+Pres":0 "+Act":0 "+Subj":0 
+            | 0:[N οι] PrimActOpt "+Pres":0 "+Act":0 "+Opt":0 # non-contract verbs. But also possible for contract verbs? (Ars Graeca 94)
+            | 0:[O οι] PrimActOptContr "+Pres":0 "+Act":0 "+Opt":0 ] # contract verbs
+           "@D.VoiceR.Med@" ]
+       | [  [ ThemV PrimMed "+Pres":0 "+Med":0
+            | ThemVSubj PrimMed "+Pres":0 "+Med":0 "+Subj":0
+            | 0:[οι] SecMed "+Pres":0 "+Med":0 "+Opt":0 ]
+           "@U.Them.+@" ]
        | [ "@U.Them.-@" PrimMed "+Pres":0 "+Med":0 ]
        | [ "@D.VoiceR.Med@" ["+Inf" "+Pres" "+Act"]:[I ει ν] ] 
        | [ ["+Inf" "+Pres" "+Med"]:[ε σ θ αι] ] 
-       | [ "@D.VoiceR.Med@" [ "+2Sg":ε "@U.Num.2Sg@" | "+2Pl":{ετε} "@U.Num.2Pl@" ] [ "+Imp" "+Pres" "+Act" ]:0 ] 
+       | [ "@D.VoiceR.Med@" PrimActImp [ "+Pres" "+Act" "+Imp" ]:0 ] 
+       | [ PrimMedImp [ "+Pres" "+Med" "+Imp" ]:0 ] 
        | [ ["+Inf" "+Pres" "+Med"]:[ε σ θ αι] ] 
+       ] "@D.Voice.Pass@"
        ]
-       ]
-        ;
+       .o. [ N -> 0 || \[α|ε|ο] "." _ ]
+       .o. [ O -> 0 || [α|ε|ο] "." _ ]
+       .o. \[O|N]* # remove non-contract forms with contract endings
+       ;
 
 define MiPresent [
        [ "@U.Tense.Pres@" [ "@U.Redup.+@" [ MiVerb .o. getStem .o. RedupI ] | "@U.Redup.-@" [ MiVerb .o. getStem ] ]
@@ -434,11 +584,19 @@ define Future [
        0:{.σ}
        [
          [ "@D.VoiceR.Med@" "@D.FutVoiceR.Med@" PrimAct "+Fut":0 "+Act":0 ]
+       | [ 0:[N οι] PrimActOpt "+Fut":0 "+Act":0 "+Opt":0 "@D.VoiceR.Med@" "@D.FutVoiceR.Med@"  ]
+       | [ 0:[LL οι] PrimActOptLiq "+Fut":0 "+Act":0 "+Opt":0 "@D.VoiceR.Med@" "@D.FutVoiceR.Med@" ]
        | [ ThemV PrimMed "+Fut":0 "+Med":0 ]
+       | [ 0:[οι] SecMed "+Fut":0 "+Med":0 "+Opt":0 ]
        | [ "@D.VoiceR.Med@" "@D.FutVoiceR.Med@" ["+Inf" "+Fut" "+Act"]:[ει ν] ] 
        | ["+Inf" "+Fut" "+Med"]:[{εσθ}αι] 
+       ] "@D.Voice.Pass@"
        ]
-       ] .o. izoContraction .o. SigmaAssimilations
+       .o. [LL -> 0 || L ?* _ ]
+       .o. [N -> 0 || .#. \L* _ ] 
+       .o. [L -> ":"]
+       .o. \[LL|N]* # remove non-liquid forms with liquid endings
+       .o. izoContraction .o. SigmaAssimilations
        ;
 
 define positionAugment [ "·" -> "·" Aug ] .o. [ Aug -> 0 || _ ?* Aug ] ;
@@ -477,7 +635,7 @@ define Imperfect [
        | [ "@U.Them.+@" ThemV SecMed "+Impf":0 "+Med":0 ]
        | [ "@U.Them.-@" SecMed "+Impf":0 "+Med":0 ]
        ]
-       ] "@R.Aug.-@" ;
+       ] "@D.Voice.Pass@" "@R.Aug.-@" ;
 
 
 #       [ "@U.Tense.Pres@" [ "@U.Redup.+@" [ MiVerb .o. getStem .o. RedupI ] | "@U.Redup.-@" [ MiVerb .o. getStem ] ]
@@ -495,10 +653,10 @@ define MiImperfect [
                {ε.Lο} -> η, {ε.Lε} -> ει, 
                {α.Lο} -> η, {α.Lε} -> η,
                {υ.Lο} -> υ, {υ.Lε} -> υ ] 
-       ] "@R.Aug.-@" ;
+       ] "@D.Voice.Pass@" "@R.Aug.-@" ;
 
 define Aorist1Sgm [
-       [ "@U.Tense.Aor@" "@U.Type.Aor1@"
+       [ "@U.Tense.Aor@" "@U.AorType.Aor1@"
          [ "@U.Past.+@" Augment | "@U.Past.-@" "@U.Aug.-@" ]
          Verb
          .o. getStem .o. asigmaticLiqNasStemAor .o. lengthenContractStem
@@ -511,13 +669,13 @@ define Aorist1Sgm [
        | [  0:σ ThemVSubj PrimMed "+Aor":0 "+Med":0 "+Subj":0 "@U.Past.-@" ]
        | [ "@D.VoiceR.Med@" ["+Inf" "+Aor" "+Act"]:[σ αι] "@U.Past.-@" ] 
        | [ ["+Inf" "+Aor" "+Med"]:[{σασθ} αι] "@U.Past.-@" ] 
-       | [ [ "+2Sg":{θι} | "+2Pl":{τε} ] [ "+Imp" "+Aor" "+Act" ]:0 "@U.Past.-@" "@D.VoiceR.Med@" ]
+       | [ [ "+2Sg":{θι} | "+2Pl":{τε} ] [ "+Aor" "+Act" "+Imp" ]:0 "@U.Past.-@" "@D.VoiceR.Med@" ]
        ]
-       ] "@R.Aug.-@"
+       ]  "@D.Voice.Pass@" "@R.Aug.-@"
         ;
 
 define Aorist2Th [
-       [ "@U.Tense.Aor@" "@U.Type.Aor2@"
+       [ "@U.Tense.Aor@" "@U.AorType.Aor2@"
          [ "@U.Past.+@" Augment | "@U.Past.-@" "@U.Aug.-@" ]
          Verb
          .o. getStem
@@ -525,17 +683,18 @@ define Aorist2Th [
           0:"." 
        [
          [ ThemV SecAct "+Aor":0 "+Act":0 "@U.Past.+@" "@D.VoiceR.Med@" ]
-       | [ ThemV SecMed "+Aor":0 "+Med":0 "@U.Past.+@" ]
-       | [ ThemVSubj PrimMed "+Aor":0 "+Med":0 "+Subj":0 "@U.Past.-@" ]
-       | [ ["+Inf" "+Aor" "+Act"]:[S εῖ ν] "@U.Past.-@" "@D.VoiceR.Med@" ] # S marks stress-bearing syllable in case of non-regressive stress
-       | [ ["+Inf" "+Aor" "+Med"]:[ε σ θ αι "#"] "@U.Past.-@" ]
-       | [ [ "+2Sg":{ε} | "+2Pl":{ετε} ] [ "+Imp" "+Aor" "+Act" ]:0 "@U.Past.-@" "@D.VoiceR.Med@" ]
-       | [ [ "+2Sg":{ου#} | "+2Pl":{εσθε} ] [ "+Imp" "+Aor" "+Med" ]:0 "@U.Past.-@" ]
+       | [ ThemV SecMed "+Aor":0 "+Med":0 "@U.Past.+@" "@D.VoiceR.Act@" ]
+       | [ ThemVSubj PrimMed "+Aor":0 "+Med":0 "+Subj":0 "@U.Past.-@"  "@D.VoiceR.Act@" ]
+        # S marks stress-bearing syllable in case of non-regressive stress
+       | [ ["+Inf" "+Aor" "+Act"]:[S εῖ ν] "@U.Past.-@" "@D.VoiceR.Med@" ]
+       | [ ["+Inf" "+Aor" "+Med"]:[ε σ θ αι "#"] "@U.Past.-@" "@D.VoiceR.Act@" ]
+       | [ [ "+2Sg":{ε} | "+2Pl":{ετε} ] [ "+Aor" "+Act" "+Imp" ]:0 "@U.Past.-@" "@D.VoiceR.Med@" ]
+       | [ [ "+2Sg":{ου#} | "+2Pl":{εσθε} ] [ "+Aor" "+Med" "+Imp" ]:0 "@U.Past.-@"  "@D.VoiceR.Act@" ]
        ]
-       ] "@R.Aug.-@" ;
+       ] "@D.Voice.Pass@" "@R.Aug.-@" ;
 
 define Aorist2Ath [
-       [ "@U.Tense.Aor@" "@U.Type.Aor2A@"
+       [ "@U.Tense.Aor@" "@U.AorType.Aor2A@"
          [ "@U.Past.+@" Augment | "@U.Past.-@" "@U.Aug.-@" ]
          Verb
          .o. getStem
@@ -546,12 +705,12 @@ define Aorist2Ath [
        #| [ SecMed "+Aor":0 "+Med":0 "@U.Past.+@" ]
        | [ ["+Inf" "+Aor" "+Act"]:[ν αι] "@U.Past.-@" "@D.VoiceR.Med@" ] 
        #| [ ["+Inf" "+Aor" "+Med"]:[ε σ θ αι "#"] "@U.Past.-@" ] 
-       | [ [ "+2Sg":{θι} | "+2Pl":{τε} ] [ "+Imp" "+Aor" "+Act" ]:0 "@U.Past.-@" "@D.VoiceR.Med@" ]
+       | [ [ "+2Sg":{θι} | "+2Pl":{τε} ] [ "+Aor" "+Act" "+Imp" ]:0 "@U.Past.-@" "@D.VoiceR.Med@" ]
        ]
-       ] "@R.Aug.-@" ;
+       ] "@D.Voice.Pass@" "@R.Aug.-@" ;
 
 define AoristK [
-       [ [ "@U.Tense.Aor@" "@U.Type.AorK@"
+       [ [ "@U.Tense.Aor@" "@U.AorType.AorK@"
            [ "@U.Past.+@" Augment | "@U.Past.-@" "@U.Aug.-@" ]
            MiVerb
            .o. getStem
@@ -560,24 +719,64 @@ define AoristK [
        [ SecActK "+Aor":0 "+Act":0 "@U.Past.+@" "@D.VoiceR.Med@" ] ]
         .o. [ {ε.L} -> {ηκ}, {ἑ.L} -> {ἡκ}, 
               {ο.L} -> {ωκ}, {ο.L} -> {ωκ} ]
-       ] "@R.Aug.-@" ;
+       ] "@D.Voice.Pass@" "@R.Aug.-@" ;
 
-define Passiv [
+define PassiveAssimilations [
+       β P -> φ,
+       π P -> φ,
+       γ P -> χ,
+       κ P -> χ,
+       [δ | τ | θ | ζ] P -> σ
+      ] .o. P -> 0 ;
+
+define Passive [
        [ [ "@U.Past.+@" Augment | "@U.Past.-@" "@U.Aug.-@" ]
          Verb
-         .o. getStem
+         .o. getStem .o. lengthenContractStem
         ]
-          0:"P"
        [
-         [ 0:{θη} SecAth "+Aor":0 "+Pass":0 "@U.Past.+@" "@D.Pass.η@" ]
-       | [ 0:{θη} 0:σ ThemV PrimMed "+Fut":0 "+Pass":0 "@U.Past.-@" "@D.Pass.η@" ]
+         [ 0:{Pθη} SecAth "+Aor":0 "+Pass":0 "@U.Past.+@" "@D.Pass.η@" ]
+       | [ 0:{Pθη} 0:σ ThemV PrimMed "+Fut":0 "+Pass":0 "@U.Past.-@" "@D.Pass.η@" ]
+       | [ 0:{Pθη} 0:σ 0:[οι] SecMed "+Fut":0 "+Pass":0 "+Opt":0 "@U.Past.-@" "@D.Pass.η@" ]
        | [ 0:η SecAth "+Aor":0 "+Pass":0 "@U.Past.+@" "@R.Pass.η@" ]
        | [ 0:η 0:σ ThemV PrimMed "+Fut":0 "+Pass":0 "@U.Past.-@" "@R.Pass.η@" ]
+       | [ 0:η 0:σ 0:[οι] SecMed "+Fut":0 "+Pass":0 "+Opt":0 "@U.Past.-@" "@R.Pass.η@" ]
+       | [ 0:{Pθη} 0:σ ["+Inf" "+Fut" "+Pass"]:[{εσθ}αι] "@U.Past.-@" "@D.Pass.η@" ] 
+       | [ 0:{PSθη} ["+Inf" "+Aor" "+Pass"]:[{ν}αι] "@U.Past.-@" "@D.Pass.η@" ]
        ]  "@R.Voice.Pass@" "@R.Aug.-@"
        ] .o. PassiveAssimilations ;
 
 
-read regex Imperfect | MiImperfect | Aorist1Sgm | Aorist2Th | Aorist2Ath | AoristK | Passiv ;
+define Redup [
+       [ λ -> {λελ},
+         θ -> {τεθ},
+         κ -> {κεκ},
+         γ -> {γεγ},
+         δ -> {δεδ},
+         φ -> {πεφ},
+         π -> {πεπ},
+         τ -> {τετ} || .#. \Char* _ ]
+       ] ;
+
+define Perfect [
+       [ "@U.Tense.Perf@"
+        [ Verb .o. getStem .o. lengthenContractStem .o. Redup ]
+        ]
+          0:"." 
+       [
+         [ [ 0:κ "@U.PerfType.ka@" | 0:A "@U.PerfType.a@" ] SecActPerf "+Perf":0 "+Act":0 ] "@D.VoiceR.Med@"
+       | [ [ 0:κ "@U.PerfType.ka@" | 0:A "@U.PerfType.a@" ] ["+Inf" "+Perf" "+Act"]:[{εν}αι{#}] "@D.VoiceR.Med@" ]
+       ] "@D.Voice.Pass@"
+       ] .o.
+       [  ε -> ο, ει -> οι || _ Consonant+ {.A} ]
+       .o. # aspiration
+       [ {β.A} -> φ, {π.A} -> φ, {γ.A} -> χ, {κ.A} -> χ, {π.A} -> φ ]
+       .o.
+       [ A -> 0 ]
+        ;
+
+
+read regex Imperfect | MiImperfect | Aorist1Sgm | Aorist2Th | Aorist2Ath | AoristK | Passive | Perfect ;
 
 eliminate flag Past
 eliminate flag Num
@@ -587,7 +786,8 @@ eliminate flag FutVoiceR
 eliminate flag VoiceR
 eliminate flag Aug
 eliminate flag Redup
-eliminate flag Type
+eliminate flag AorType
+eliminate flag PerfType
 eliminate flag Pass
 
 define ImpfAorist ;
@@ -613,41 +813,43 @@ eliminate flag Aug
 eliminate flag Redup
 eliminate flag Them
 eliminate flag Group
-eliminate flag Pass
+# eliminate flag Pass
 
 define Verbs
 
-define assimilations [
+define Assimilations [
        [ ν -> μ || _ "·" β ] .o.
        [ κ -> ξ || _ "·" AVowel ]
        ] ;
 
-read regex [ atomize.i .o. assimilations.i .o. Verbs .o. resolveAugment .o.
-             Contractions .o. assimilations .o. atomize ] | "-" | "[" ?* "]" ;
+read regex [ atomize.i .o. Assimilations.i .o. Verbs .o. resolveAugment .o.
+             Contractions .o. RegressiveAccentCirc .o. Assimilations .o. atomize ] | "-" | "[" ?* "]" ;
 save stack greek.fst
 
 pop stack
 
 define dropAccents [ ά (->) α, έ (->) ε, ί (->) ι, ό (->) ο, ύ (->) υ, ή (->) η, ώ (->) ω, ού (->) ου, αί (->) αι, εί (->) ει,
           ὄ (->) ὀ, ἄ (->) ἀ, ἔ (->) ἐ, ἕ (->) ἑ, εύ (->) ευ, ἵ (->) ἱ,
-          ἤ (->) ἠ, ὤ (->) ὠ, ὔ (->) ὐ, αἴ (->) αἰ, αἵ (->) αἱ, οἴ (->) οἰ, οἵ (->) οἱ, ῄ (->) ῃ,
-          εὔ (->) εὐ, εὕ (->) εὑ, εἶ (->) εἰ, εἵ (->) εἱ, 
+          ἤ (->) ἠ, ὤ (->) ὠ, ὔ (->) ὐ, ὕ (->) ὑ, αἴ (->) αἰ, αἵ (->) αἱ, οἴ (->) οἰ, οἵ (->) οἱ, ῄ (->) ῃ,
+          εὔ (->) εὐ, εὕ (->) εὑ, εἶ (->) εἰ, εἵ (->) εἱ, ηὔ (->) ηὐ, ηὕ (->) ηὑ,
           ἥ (->) ἡ,
           ᾶ (->) α, ῖ (->) ι, ῦ (->) υ, ῆ (->) η, ῶ (->) ω, οῦ (->) ου, αῖ (->) αι, εῖ (->) ει,
           ἆ (->) ἀ, εῦ (->) ευ, ἷ (->) ἱ, ἦ (->) ἠ, ῑ (->) ι, ῑ́ (->) ι, ᾷ (->) ᾳ, ἴ (->) ἰ,
-          ἧ (->) ἡ, ὦ (->) ὠ, ὖ (->) ὐ, αἶ (->) αἰ, αἷ (->) αἱ, ῇ (->) ῃ, εὖ (->) εὐ, εἶ (->) εἰ, εἷ (->) εἱ ] ;
+          ἧ (->) ἡ, ὦ (->) ὠ, ὖ (->) ὐ, αἶ (->) αἰ, αἷ (->) αἱ, ῇ (->) ῃ,
+          εὖ (->) εὐ, εὕ (->) εὑ, εἶ (->) εἰ, εἷ (->) εἱ, ὖ (->) ὐ
+          ] ;
 
-read regex [ atomize.i .o. assimilations.i .o. Verbs .o. resolveAugment .o.
-             Contractions .o. assimilations .o. atomize .o. dropAccents ] ;
+read regex [ atomize.i .o. Assimilations.i .o. Verbs .o. resolveAugment .o.
+             Contractions .o. RegressiveAccentCirc .o. Assimilations .o. atomize .o. dropAccents ] ;
 
 save stack greek-no-accents.fst
 
 pop stack
 
-define removeFeatures 0 <- [ "+Act" | "+Aor" | "+Fut" | "+Imp" | "+Impf" | "+Inf" | "+Med" | "+Pass" | "+Pres" 
-                           | "+Subj" | "+1Pl" | "+1Sg" | "+2Pl" | "+2Sg" | "+3Pl" | "+3Sg" ] ;
+define removeFeatures 0 <- [ "+Act" | "+Aor" | "+Fut" | "+Imp" | "+Impf" | "+Inf" | "+Med" | "+Pass" | "+Pres" | "+Perf"
+                           | "+Subj" | "+Opt" | "+1Pl" | "+1Sg" | "+2Pl" | "+2Sg" | "+3Pl" | "+3Sg" ] ;
 
-read regex [ removeFeatures .o. atomize.i .o. assimilations.i .o. Verbs ].u : "-" ;
+read regex [ removeFeatures .o. atomize.i .o. Assimilations.i .o. Verbs ].u : "-" ;
 
 save stack greek-lemmata.fst
 
