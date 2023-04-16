@@ -1,18 +1,24 @@
+;; -*- Mode: lisp; Syntax: ansi-common-lisp; Package: CL-FST; Base: 10 -*-
+
+;; Copyright (c) 2018, Paul Meurer, University of Bergen
+;; https://clarino.uib.no
+;; All rights reserved.
+
 (in-package :cl-fst)
 
 ;; the global fst context record
 (defparameter *fst-cntxt* (initialize-cfsm)) ;; Lauri: try using one for each thread
 
+(defconstant +fst+ :fst)
+
 (defclass fst-net ()
   ((fst-cntxt :initform *fst-cntxt* :initarg :fst-cntxt :reader fst-cntxt)
    (fst-file :initform nil :initarg :file :reader fst-file)
    (net-ptr :initform nil :reader net-ptr)
-   (name :initform nil :initarg :name :reader name)
+   (name :initform nil :initarg :name :reader net-name)
    #+ignore
    (Lock :initform (make-process-lock :name (symbol-name (gensym "net-lock-")))
 	 :reader fst-net-lock)))
-
-;;(print (symbol-name (gensym "lock-")))
 
 (defclass fst-tokenizer (fst-net)
   ((token-boundary :initform "TB" :initarg :token-boundary :reader token-boundary)
@@ -42,8 +48,6 @@
     (:lower 1)
     (:both-sides 2)))
 
-;;(defparameter +lookup-lock+ (make-process-lock :name "lookup-lock"))
-
 ;; fst-lookup() is thread-safe since each thread gets its own applyer object
 (defmethod fst-lookup ((net fst-net) (strings list) function &key (side :lower))
   (with-process-lock (+fst-net-lock+)
@@ -58,7 +62,7 @@
 (defmethod fst-lookup ((nets list) (string string) function
 		       &key (side :lower) (mode :priority-union))
   (loop with found = nil
-       and res = nil
+     and res = nil
      for net in nets
      until (with-slots (fst-cntxt net-ptr) net
 	     (with-process-lock (+fst-net-lock+)
