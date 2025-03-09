@@ -1,11 +1,11 @@
 
-cl-libfst is a Common Lisp interface to libcfsm.
+fst is a Common Lisp interface to libcfsm.
 
 It uses the ASDF utility for loading and needs
 the modules acl-compat (http://www.cliki.net/ACL-COMPAT)
 and cffi (http://common-lisp.net/project/cffi/).
 
-cl-libfst has been tested in Clozure CL, Allegro CL and SBCL.
+fst has been tested in Clozure CL, Allegro CL and SBCL.
 
 You should adapt the paths in load-fst.lisp to your environment.
 
