@@ -11,9 +11,9 @@ You should adapt the paths in load-fst.lisp to your environment.
 
 See the file examples.lisp for example code.
 
-There is a problem with s function name clash between ccl and fst:
+There is a problem with a function name clash between ccl and fst:
 
-So, to be able to run cl-fst in ccl you have to recompile the Clozure kernel:
+So, to be able to run fst in ccl you have to recompile the Clozure kernel:
 
 
 Make sure there is no --export-dynamic in the Makefile:
