@@ -33,7 +33,7 @@
 (defmethod initialize-instance :after ((net fst-net) &key &allow-other-keys)
   (with-slots (fst-cntxt fst-file net-ptr) net
     (with-process-lock (+fst-net-lock+) ;; the global lock
-      (assert (probe-file fst-file))
+      (assert (probe-file fst-file) nil "Could not find file ‘~a’" fst-file)
       (setf net-ptr (load-net (namestring (translate-logical-pathname fst-file)) fst-cntxt))
       (assert (not (null-pointer-p net-ptr))))))
 

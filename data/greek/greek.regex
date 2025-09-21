@@ -61,6 +61,7 @@ define PresFutAor1PerfPass PresFutAor1Perf | Pass ;
 define PerfPass Perf | Pass ;
 define Aor1PerfPass Aor1 | Perf | Pass ;
 define Aor1Pass Aor1 | Pass ;
+define PresFutPass PresFut | Pass ; 
 define PresFutAor1Pass PresFutAor1 | Pass ; 
 define PresFutAor1PassE PresFutAor1 | PassE ; 
 define FutAor1Pass FutAor1 | Pass ;
@@ -77,6 +78,9 @@ define PV ([{ἐκ}|{ἀπο}|{κατα}|{συν}|{προσ}|{εἰσ}] "·") ;
 
 define AugEi "@U.Aug.ει@" "@P.Aug.-@" | "@U.Past.-@" ;
 
+# empty augment: ἔρξα
+define AugØ "@U.Aug.Ø@" "@P.Aug.-@" | "@U.Past.-@" ;
+
 define Unpers "@U.Num.3Sg@" ;
 
 # non-contract verbs ending in vowel get ":" (no lengthened vowel in Aor)
@@ -92,7 +96,10 @@ define Verb symbolize.i .o. "@P.Them.+@" [
         PresFutAor1PerfPass {ἀγνοεω} |
         PresFutAor1PerfPass {λυω} |
         Pres ({παρα·}){καλεω} | FutAor1 ({παρα·}){καλεω}:{καλε:-} | [Pass | Perf] ({παρα·}){καλεω}:{κλε-} |
-        Pres {φαινω} | Fut {φαινω}:{φαν-} | Aor1 {φαινω}:{φην-} | Perf {φαινω}:{φαγ-} |
+        Pres {φαινω} | Fut {φαινω}:{φαν-}
+                     | Aor1 {φαινω}:{φην-}
+                     | PassE {φαινω}:{φαν-}
+                     | Perf {φαινω}:{φαγ-} |
         PresFutAor1PassE {γραφω} | PerfA {γραφω} |
         [ PresFutAor1PerfA | Pass ] {πεμπω} |
         PresFutAor1PerfA {τρεπω} | PassE {τρεπω}:{τραπ-} |
@@ -116,7 +123,7 @@ define Verb symbolize.i .o. "@P.Them.+@" [
         Pres PV {βαλλω}   | Fut PV {βαλλω}:{βαλεL-} | Aor2 PV {βαλλω}:{βαλ-} |
         Pres {εὑρισκω}    | FutPerf {εὑρισκω}:{εὑρε-} | Aor2 {εὑρισκω}:{εὑρ-} |
         Pres AugEi {ἐχω}  | Fut {ἐχω}:[{ἑχ-}|{σχε-}] | Aor2 {ἐχω}:{σχ-} |
-        Pres {ἐγειρω} | Aor1 Act {ἐγειρω} | Fut {ἐγειρω}:{ἐγερεL-} | Aor2 Med {ἐγειρω}:{ἐγρ-} |
+        Pres {ἐγειρω} | Aor1 Act {ἐγειρω} | Fut {ἐγειρω}:{ἐγερεL-} | Aor2 Med {ἐγειρω}:{ἐγρ-} | Pass {ἐγειρω}:{ἐγερ-} |
         Pres {ἐλαυνω}     | Fut {ἐλαυνω}:{ἐλα#-} | Aor1 {ἐλαυνω}:{ἐλα:-} | 
         PresFutAor1PerfPass {δοκεω} | Aor1PerfPass {δοκεω}:{δοκ-} | # wrong Perf
         Pres {ἀπο·κτεινω}  | Fut {ἀπο·κτεινω}:{ἀπο·κτενεL-} | Aor1 {ἀπο·κτεινω}:{ἀπο·κτεν-} |
@@ -124,11 +131,14 @@ define Verb symbolize.i .o. "@P.Them.+@" [
         Pres {λαμβανω}    | [ Fut Med | Pass ] {λαμβανω}:{ληβ-} | Aor2 {λαμβανω}:{λαβ-} |
         Pres {μανθανω}    | Fut Med {μανθανω}:{μαθε-} | Aor2 {μανθανω}:{μαθ-} |
         Pres {πασχω}      | Fut Med {πασχω}:{πενθ-} | Aor2 {πασχω}:{παθ-} |
+        PresFutAor1 {πειθω} |
         Pres {βαινω}      | [ Fut Med | Aor2A ] {βαινω}:{βη-} |
         Pres {γιγνωσκω}   | Fut Med {γιγνωσκω}:{γνω-} | Aor2A {γιγνωσκω}:{γνω-} |
         Pres {ὁραω}       | Fut Med {ὁραω}:{ὀπ-}      | Aor2 AugEi {ὁραω}:{ἰδ-} |
+        PresFutAor1Pass {ὁρμαω} |
         Pres {πινω}       | Fut Med {πινω}:{πι#-}     | Aor2 {πινω}:{πι-} | # no σ!
         Pres {πιπτω}      | Fut Med {πιπτω}:{πεσε:-}  | Aor2 {πιπτω}:{πεσ-} | Perf {πιπτω}:{.πεπτο-} | # "." : no reduplication
+        PresFutAor1Pass AugØ [ {ἐργω} | {ἐργω}:{εἰργω} ] |
         PresFutAor1 Med {ἡγεομαι} |
         Pres {τιτρωσκω} | FutAor1 {τιτρωσκω}:{τρω-} |
         PresFutAor1 {ἡκω} | # wrong augment and circumflex
@@ -152,7 +162,7 @@ define Verb symbolize.i .o. "@P.Them.+@" [
         PresFutAor1 FutMed {θαυμαζω} |
         PresFutAor1 Med (AugEi) {ἐργαζομαι} |
         PresFut Med {δεχομαι} |
-        PresFut Med {δυναμαι} |
+        PresFutPass Med {δυναμαι} | # wrong acc. on inf, wrong imp
         PresFut Med ({προ}){κειμαι} |
         Pres Med {ἐρχομαι} | Aor2 Act {ἐρχομαι}:{ἐλθ-} |
         Fut [ {διδωμι}:{δω-} | {τιθημι}:{θη-} | AugEi {ἱημι}:{ἡ-} | {ἱστημι}:{στη-} ] |
@@ -566,7 +576,7 @@ define Present [
             | ThemVSubj PrimMed "+Pres":0 "+Med":0 "+Subj":0
             | 0:[οι] SecMed "+Pres":0 "+Med":0 "+Opt":0 ]
            "@U.Them.+@" ]
-       | [ "@U.Them.-@" PrimMed "+Pres":0 "+Med":0 ]
+       | [ PrimMed "+Pres":0 "+Med":0 "@U.Them.-@"  ]
        | [ "@D.VoiceR.Med@" ["+Inf" "+Pres" "+Act"]:[I ει ν] ] 
        | [ ["+Inf" "+Pres" "+Med"]:[ε σ θ αι] ] 
        | [ "@D.VoiceR.Med@" PrimActImp [ "+Pres" "+Act" "+Imp" ]:0 ] 
@@ -642,11 +652,11 @@ define Future [
 define positionAugment [ "·" -> "·" Aug ] .o. [ Aug -> 0 || _ ?* Aug ] ;
 
 define resolveAugment [
-       [ AugA ἑ -> ἧ, AugA ἐ -> ἦ, AugA ἰ -> ἶ, AugA ὀ -> ὦ, AugA ἀ -> ἦ, AugA εὗ -> ηὗ || _ Consonant* Short Consonant* .#. ] .o.
-       [ AugA ἑ -> ἥ, AugA ἐ -> ἤ, AugA ἰ -> ἴ, AugA ὀ -> ὤ, AugA ἡ -> ἥ,
+       [ AugA ἑ -> ἧ, AugA ἐ -> ἦ, AugA ἰ -> ἶ, AugA ὀ -> ὦ, AugA ὁ -> ὧ, AugA ἀ -> ἦ, AugA εὗ -> ηὗ || _ Consonant* Short Consonant* .#. ] .o.
+       [ AugA ἑ -> ἥ, AugA ἐ -> ἤ, AugA ἰ -> ἴ, AugA ὀ -> ὤ, AugA ὁ -> ὥ, AugA ἡ -> ἥ,
          AugA αἱ -> ᾕ, AugA οἱ -> ᾥ, AugA οἰ -> ᾤ, AugA αἰ -> ᾔ, AugA ι -> ῑ́, AugA εὐ -> ηὔ, AugA εὑ -> ηὕ
           ] .o.
-       [ Aug ἑ -> ἡ, Aug ἐ -> ἠ, Aug ἀ -> ἠ, Aug ἰ -> ἰ, Aug ὀ -> ὠ, Aug ι -> ῑ, Aug ί -> ῑ́,
+       [ Aug ἑ -> ἡ, Aug ἐ -> ἠ, Aug ἀ -> ἠ, Aug ἰ -> ἰ, Aug ὀ -> ὠ, Aug ὁ -> ὡ, Aug ι -> ῑ, Aug ί -> ῑ́,
          Aug αἵ -> ᾕ, Aug οἵ -> ᾥ, Aug οἴ -> ᾤ, Aug εὐ -> ηὐ, Aug εὑ -> ηὑ,
          Aug αἱ -> ᾑ, Aug οἱ -> ᾡ, Aug οἰ -> ᾠ, Aug ἡ -> ἡ,
          Aug αἰ -> ᾐ, Aug αἴ -> ᾔ, AugA ἀ -> ἤ,
@@ -665,7 +675,7 @@ define resolveAugment [
 
 # define AugEi "@U.Aug.ει@" "@P.Aug.-@" | "@U.Past.-@" ;
 
-define Augment [ "@U.Aug.-@" 0:Aug | "@U.Aug.ει@" 0:"Aug.ει" ] ;
+define Augment [ "@U.Aug.-@" 0:Aug | "@U.Aug.ει@" 0:"Aug.ει" | "@U.Aug.Ø@" ] ;
 
 define Imperfect [
        [ "@U.Tense.Pres@" "@U.Past.+@"
